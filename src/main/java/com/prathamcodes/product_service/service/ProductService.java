@@ -1,12 +1,19 @@
 package com.prathamcodes.product_service.service;
 
 import com.prathamcodes.product_service.model.Product;
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class ProductService {
     private List<Product> products = new ArrayList<>();
+
+    public List<Product> getAllProducts() {
+        return products;
+    }
 
     public ProductService() {
         products.add(new Product(1L, "Laptop", 1200.00));
