@@ -1,18 +1,26 @@
 package com.prathamcodes.product_service.service;
 
+import com.prathamcodes.product_service.dto.ProductDTO;
+import com.prathamcodes.product_service.exception.ResourceNotFoundException;
 import com.prathamcodes.product_service.model.Product;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProductService {
     private List<Product> products = new ArrayList<>();
+    private Long nextId = 6L;
 
     public List<Product> getAllProducts() {
         return products;
+    }
+
+    public Product createProduct(ProductDTO dto) {
+        Product product = new Product(nextId++, dto.getName(), dto.getPrice());
+        products.add(product);
+        return product;
     }
 
     public ProductService() {
@@ -35,9 +43,10 @@ public class ProductService {
                 .toList();
     }
 
-    public Optional<Product> getProductById(Long id) {
+    public Product getProductById(Long id) {
         return products.stream()
                 .filter(p -> p.getId().equals(id))
-                .findFirst();
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
     }
 }
