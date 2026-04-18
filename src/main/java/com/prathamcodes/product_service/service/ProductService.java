@@ -3,50 +3,42 @@ package com.prathamcodes.product_service.service;
 import com.prathamcodes.product_service.dto.ProductDTO;
 import com.prathamcodes.product_service.exception.ResourceNotFoundException;
 import com.prathamcodes.product_service.model.Product;
+import com.prathamcodes.product_service.repository.ProductRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ProductService {
-    private List<Product> products = new ArrayList<>();
-    private Long nextId = 6L;
+    private final ProductRepository productRepository;
 
     public List<Product> getAllProducts() {
-        return products;
+        return productRepository.findAll();
     }
 
     public Product createProduct(ProductDTO dto) {
-        Product product = new Product(nextId++, dto.getName(), dto.getPrice());
-        products.add(product);
-        return product;
-    }
-
-    public ProductService() {
-        products.add(new Product(1L, "Laptop", 1200.00));
-        products.add(new Product(2L, "Smartphone", 800.00));
-        products.add(new Product(3L, "Tablet", 300.00));
-        products.add(new Product(4L, "Monitor", 150.00));
-        products.add(new Product(5L, "Keyboard", 50.00));
+        Product product = new Product();
+        product.setName(dto.getName());
+        product.setPrice(dto.getPrice());
+        return productRepository.save(product);
     }
 
     public List<Product> getProductsAbovePrice(double price) {
-        return products.stream()
+        return productRepository.findAll().stream()
                 .filter(p -> p.getPrice() > price)
                 .toList();
     }
 
     public List<String> getAllProductNames() {
-        return products.stream()
+        return productRepository.findAll().stream()
                 .map(Product::getName)
                 .toList();
     }
 
     public Product getProductById(Long id) {
-        return products.stream()
-                .filter(p -> p.getId().equals(id))
-                .findFirst()
+        return productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
     }
 }
