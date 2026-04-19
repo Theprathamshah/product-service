@@ -26,9 +26,7 @@ public class ProductService {
     }
 
     public List<Product> getProductsAbovePrice(double price) {
-        return productRepository.findAll().stream()
-                .filter(p -> p.getPrice() > price)
-                .toList();
+        return productRepository.findByPriceGreaterThan(price);
     }
 
     public List<String> getAllProductNames() {
